@@ -700,9 +700,10 @@ public class CalcFrame extends JFrame {
 
         add(jPanel);
         setSize(FRAME_WIDTH, FRAME_HEIGHT);
+        setMinimumSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
         setLocation(X_POINT, Y_POINT);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setTitle("Calculator V1.0");
+        setTitle("myCalculator V1.0");
         setVisible(true);
 
     }
