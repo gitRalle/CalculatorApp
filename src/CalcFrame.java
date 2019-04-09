@@ -71,11 +71,12 @@ public class CalcFrame extends JFrame {
         gbc.gridx = 0;
         gbc.gridwidth = 3;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        jPanel.add(resultField = new JTextField(FIELD_WIDTH), gbc);
+        resultField = new JTextField(FIELD_WIDTH);
         resultField.setEditable(false);
         resultField.setBorder(null);
         resultField.setFont(font);
         resultField.setHorizontalAlignment(JTextField.LEFT);
+        jPanel.add(resultField, gbc);
 
         // Display Area TextArea
         gbc = new GridBagConstraints();
@@ -638,7 +639,7 @@ public class CalcFrame extends JFrame {
                 if (acceptableFormat) {
                     Calculation calc = new Calculation(displayArea.getText());
                     resultField.setText(displayArea.getText() + " " + equals.getText() + " ");
-                    displayArea.setText(String.valueOf(calc.getResult()));
+                    displayArea.setText(calc.getResult());
                 }
             }
         }
