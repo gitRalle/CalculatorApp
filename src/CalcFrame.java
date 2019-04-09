@@ -49,10 +49,10 @@ public class CalcFrame extends JFrame {
     private final int BUTTON_HEIGHT = 30;
 
     private final Insets insets = new Insets(4, 4, 4, 4);
-    private final Border numericalBorder_defaultState = BorderFactory.createEtchedBorder(Color.GRAY, Color.GRAY); // WHITE, GRAY
-    private final Border numericalBorder_hoverState = BorderFactory.createEtchedBorder(Color.GRAY, Color.DARK_GRAY);         // WHITE, LIGHT_GRAY
-    private final Border operandBorder_defaultState = BorderFactory.createEtchedBorder(Color.GRAY, Color.GRAY);   // GRAY, DARKGRAY
-    private final Border operandBorder_hoverState = BorderFactory.createEtchedBorder(Color.GRAY, Color.DARK_GRAY);           // GRAY, LIGHT_GRAY
+    private final Border numericalBorder_defaultState = BorderFactory.createEtchedBorder(Color.GRAY, Color.DARK_GRAY); // GRAY, GRAY
+    private final Border numericalBorder_hoverState = BorderFactory.createEtchedBorder(Color.GRAY, Color.GRAY);        // GRAY, DARK_GRAY
+    private final Border operandBorder_defaultState = BorderFactory.createEtchedBorder(Color.GRAY, Color.DARK_GRAY);   // GRAY, GRAY
+    private final Border operandBorder_hoverState = BorderFactory.createEtchedBorder(Color.GRAY, Color.GRAY);          // GRAY, DARK_GRAY
     private final Color backgroundColor = Color.LIGHT_GRAY; // 225, 232, 176
     private final Color numericalBackgroundColor = new Color(255, 236, 255);
     private final Font font = new Font("Arial", Font.PLAIN, 12);
@@ -89,7 +89,7 @@ public class CalcFrame extends JFrame {
         displayArea.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         displayArea.setEditable(false);
         displayArea.setFont(new Font("Arial", Font.PLAIN, 16));
-        displayArea.setBorder(BorderFactory.createEtchedBorder(Color.GRAY, Color.LIGHT_GRAY)); // Blue, Gray
+        displayArea.setBorder(BorderFactory.createEtchedBorder(Color.GRAY, Color.DARK_GRAY)); // GRAY, LIGHT_GRAY
         jPanel.add(displayArea, gbc);
 
         // Left Bracket Button
