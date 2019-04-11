@@ -1,3 +1,7 @@
+import org.jvnet.substance.SubstanceLookAndFeel;
+import org.jvnet.substance.painter.ControlBackgroundComposite;
+import org.jvnet.substance.skin.*;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
@@ -48,13 +52,14 @@ public class CalcFrame extends JFrame {
     private final int BUTTON_WIDTH = 50;
     private final int BUTTON_HEIGHT = 30;
 
-    private final Insets insets = new Insets(4, 4, 4, 4);
+    private final Insets insets = new Insets(3, 3, 3, 3);
     private final Border numericalBorder_defaultState = BorderFactory.createEtchedBorder(Color.GRAY, Color.DARK_GRAY); // GRAY, GRAY
-    private final Border numericalBorder_hoverState = BorderFactory.createEtchedBorder(Color.GRAY, Color.GRAY);        // GRAY, DARK_GRAY
+    private final Border numericalBorder_hoverState = BorderFactory.createEtchedBorder(Color.GRAY, Color.LIGHT_GRAY);        // GRAY, DARK_GRAY
     private final Border operandBorder_defaultState = BorderFactory.createEtchedBorder(Color.GRAY, Color.DARK_GRAY);   // GRAY, GRAY
-    private final Border operandBorder_hoverState = BorderFactory.createEtchedBorder(Color.GRAY, Color.GRAY);          // GRAY, DARK_GRAY
-    private final Color backgroundColor = Color.LIGHT_GRAY; // 225, 232, 176
-    private final Color numericalBackgroundColor = new Color(255, 236, 255);
+    private final Border operandBorder_hoverState = BorderFactory.createEtchedBorder(Color.GRAY, Color.LIGHT_GRAY);          // GRAY, DARK_GRAY
+    private final Color backgroundColor = new Color(147, 147, 125); // LIGHT_GRAY < (147, 147, 147)
+    private final Color numericalBackgroundColor = new Color(236, 236, 236); // 255, 236, 255
+    private final Color foregroundColor = Color.WHITE;
     private final Font font = new Font("Arial", Font.PLAIN, 12);
 
     public CalcFrame() {
@@ -74,7 +79,7 @@ public class CalcFrame extends JFrame {
         resultField = new JTextField(FIELD_WIDTH);
         resultField.setEditable(false);
         resultField.setBorder(null);
-        resultField.setFont(font);
+        resultField.setFont(new Font("Arial", Font.PLAIN, 13));
         resultField.setHorizontalAlignment(JTextField.LEFT);
         jPanel.add(resultField, gbc);
 
@@ -101,6 +106,7 @@ public class CalcFrame extends JFrame {
         leftBracket = new JButton("(");
         leftBracket.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
         leftBracket.setBackground(backgroundColor);
+        leftBracket.setForeground(foregroundColor);
         leftBracket.setFont(font);
         leftBracket.setFocusable(false);
         leftBracket.addActionListener(new ActionListener() {
@@ -130,6 +136,7 @@ public class CalcFrame extends JFrame {
         rightBracket = new JButton(")");
         rightBracket.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
         rightBracket.setBackground(backgroundColor);
+        rightBracket.setForeground(foregroundColor);
         rightBracket.setFont(font);
         rightBracket.setFocusable(false);
         rightBracket.addActionListener(new ActionListener() {
@@ -159,6 +166,7 @@ public class CalcFrame extends JFrame {
         modulos = new JButton("%");
         modulos.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
         modulos.setBackground(backgroundColor);
+        modulos.setForeground(foregroundColor);
         modulos.setFont(font);
         modulos.setFocusable(false);
         modulos.addActionListener(new ActionListener() {
@@ -188,6 +196,7 @@ public class CalcFrame extends JFrame {
         CE = new JButton("CE");
         CE.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
         CE.setBackground(backgroundColor);
+        CE.setForeground(foregroundColor);
         CE.setFont(font);
         CE.setFocusable(false);
         CE.addActionListener(new ActionListener() {
@@ -318,6 +327,7 @@ public class CalcFrame extends JFrame {
         division = new JButton("/");
         division.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
         division.setBackground(backgroundColor);
+        division.setForeground(foregroundColor);
         division.setFont(font);
         division.setFocusable(false);
         division.addActionListener(new ActionListener() {
@@ -434,6 +444,7 @@ public class CalcFrame extends JFrame {
         multiplication = new JButton("x");
         multiplication.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
         multiplication.setBackground(backgroundColor);
+        multiplication.setForeground(foregroundColor);
         multiplication.setFont(font);
         multiplication.setFocusable(false);
         multiplication.addActionListener(new ActionListener() {
@@ -551,6 +562,7 @@ public class CalcFrame extends JFrame {
         subtraction = new JButton("-");
         subtraction.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
         subtraction.setBackground(backgroundColor);
+        subtraction.setForeground(foregroundColor);
         subtraction.setFont(font);
         subtraction.setFocusable(false);
         subtraction.addActionListener(new ActionListener() {
@@ -677,6 +689,7 @@ public class CalcFrame extends JFrame {
         addition = new JButton("+");
         addition.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
         addition.setBackground(backgroundColor);
+        addition.setForeground(foregroundColor);
         addition.setFont(font);
         addition.setFocusable(false);
         addition.addActionListener(new ActionListener() {
@@ -701,7 +714,7 @@ public class CalcFrame extends JFrame {
 
         add(jPanel);
         setSize(FRAME_WIDTH, FRAME_HEIGHT);
-        setMinimumSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
+        setMinimumSize(new Dimension(FRAME_WIDTH - 25, FRAME_HEIGHT - 25));
         setLocation(X_POINT, Y_POINT);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("myCalculator V1.0");
@@ -726,8 +739,8 @@ public class CalcFrame extends JFrame {
             return false;
         }
 
-        // If the first element is an operand, return false
-        if (text[0] == '+' || text[0] == '-' || text[0] == '*' || text[0] == '/' || text[0] == '%') {
+        // If the first element is an operand excluding subtraction, return false
+        if (text[0] == '+' || text[0] == '*' || text[0] == '/' || text[0] == '%') {
             return false;
         }
 

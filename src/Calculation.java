@@ -16,16 +16,7 @@ public class Calculation {
         } catch (ScriptException se) {
             se.printStackTrace();
         }
-
-        final boolean isDouble = hasFloatingPoint(obj);
-
-        if (isDouble) {
-            this.result = String.format("%.2f", obj);
-        }
-
-        else {
-            this.result = String.valueOf(obj);
-        }
+        this.result = String.valueOf(obj);
 
     }
 
@@ -35,18 +26,14 @@ public class Calculation {
 
         // Go through char[] and looks for decimal point
         for (int i = 0; i < arr.length; i++) {
-            if (arr[i] == '.') {
+            if (arr[i] == '.' || arr[i] == ',') {
                 hasFloatingPoint = true;
                 break;
             }
         }
 
-     //   System.out.printf("Object is a%s", hasFloatingPoint ? " double" : "n integer");
-
         return hasFloatingPoint;
     }
-
-
 
     public String getResult() {
         return result;
