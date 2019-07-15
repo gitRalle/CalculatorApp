@@ -1,6 +1,8 @@
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import javax.xml.parsers.ParserConfigurationException;
+import java.text.ParseException;
 
 public class Calculation {
     private String result;
@@ -14,8 +16,9 @@ public class Calculation {
             obj = scriptEngine.eval(expression);
 
         } catch (ScriptException se) {
-            se.printStackTrace();
+            // obj is null
         }
+
         this.result = String.valueOf(obj);
 
     }

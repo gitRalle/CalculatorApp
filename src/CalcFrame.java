@@ -1,7 +1,3 @@
-import org.jvnet.substance.SubstanceLookAndFeel;
-import org.jvnet.substance.painter.ControlBackgroundComposite;
-import org.jvnet.substance.skin.*;
-
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
@@ -9,49 +5,39 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+
 
 public class CalcFrame extends JFrame {
-    private JPanel jPanel;
+
+    // Components that have unique functionality
     private JTextField resultField;
     private JTextArea displayArea;
-    private JButton numberZero;
-    private JButton numberOne;
-    private JButton numberTwo;
-    private JButton numberThree;
-    private JButton numberFour;
-    private JButton numberFive;
-    private JButton numberSix;
-    private JButton numberSeven;
-    private JButton numberEight;
-    private JButton numberNine;
-    private JButton point;
-    private JButton leftBracket;
-    private JButton rightBracket;
     private JButton equals;
-    private JButton modulos;
-    private JButton CE;
-    private JButton division;
-    private JButton multiplication;
-    private JButton subtraction;
-    private JButton addition;
 
+    // ButtonGroups - (very useful)
+    private JButton[] numberedButtons = new JButton[11];
+    private JButton[] operandButtons  = new JButton[8];
+
+    // Defines the dimensions of the frame
     private final int FRAME_WIDTH = 325;
     private final int FRAME_HEIGHT = 325;
 
+    // Defines where on the screen the frame first becomes visible
     private final int X_POINT = 500;
     private final int Y_POINT = 150;
 
+    // Defines the dimensions of the rows and cols of the displayArea (JTextArea)
     private final int AREA_ROWS = 1;
     private final int AREA_COLS = 12;
 
+    // Defines the width of the resultField (JTextField)
     private final int FIELD_WIDTH = AREA_COLS / 2;
 
+    // Defines the dimensions of all the JButtons
     private final int BUTTON_WIDTH = 50;
     private final int BUTTON_HEIGHT = 30;
 
+    // Defines certain visual aspects of the components on screen
     private final Insets insets = new Insets(3, 3, 3, 3);
     private final Border numericalBorder_defaultState = BorderFactory.createEtchedBorder(Color.GRAY, Color.DARK_GRAY); // GRAY, GRAY
     private final Border numericalBorder_hoverState = BorderFactory.createEtchedBorder(Color.GRAY, Color.LIGHT_GRAY);        // GRAY, DARK_GRAY
@@ -62,12 +48,17 @@ public class CalcFrame extends JFrame {
     private final Color foregroundColor = Color.WHITE;
     private final Font font = new Font("Arial", Font.PLAIN, 12);
 
+
     public CalcFrame() {
         initFrame();
+        initButtonGroupNumbered();
+        initButtonGroupOperand();
+        setVisible(true);
     }
 
+
     private void initFrame() {
-        jPanel = new JPanel(new GridBagLayout());
+        JPanel jPanel = new JPanel(new GridBagLayout());
 
         // Result Field TextField
         GridBagConstraints gbc = new GridBagConstraints();
@@ -103,556 +94,141 @@ public class CalcFrame extends JFrame {
         gbc.insets = insets;
         gbc.gridy = 2;
         gbc.gridx = 0;
-        leftBracket = new JButton("(");
-        leftBracket.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-        leftBracket.setBackground(backgroundColor);
-        leftBracket.setForeground(foregroundColor);
-        leftBracket.setFont(font);
-        leftBracket.setFocusable(false);
-        leftBracket.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                displayArea.append(leftBracket.getText());
-            }
-        });
-        leftBracket.setBorder(operandBorder_defaultState);
-        leftBracket.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (leftBracket.getModel().isRollover() || leftBracket.getModel().isPressed()) {
-                    leftBracket.setBorder(operandBorder_hoverState);
-                } else {
-                    leftBracket.setBorder(operandBorder_defaultState);
-                }
-            }
-        });
-        jPanel.add(leftBracket, gbc);
+        jPanel.add(operandButtons[0] = new JButton("("), gbc);
 
         // Right Bracket Button
         gbc = new GridBagConstraints();
         gbc.insets = insets;
         gbc.gridy = 2;
         gbc.gridx = 1;
-        rightBracket = new JButton(")");
-        rightBracket.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-        rightBracket.setBackground(backgroundColor);
-        rightBracket.setForeground(foregroundColor);
-        rightBracket.setFont(font);
-        rightBracket.setFocusable(false);
-        rightBracket.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                displayArea.append(rightBracket.getText());
-            }
-        });
-        rightBracket.setBorder(operandBorder_defaultState);
-        rightBracket.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (rightBracket.getModel().isRollover() || rightBracket.getModel().isPressed()) {
-                    rightBracket.setBorder(operandBorder_hoverState);
-                } else {
-                    rightBracket.setBorder(operandBorder_defaultState);
-                }
-            }
-        });
-        jPanel.add(rightBracket, gbc);
+        jPanel.add(operandButtons[1] = new JButton(")"), gbc);
 
         // Modulus Button
         gbc = new GridBagConstraints();
         gbc.insets = insets;
         gbc.gridy = 2;
         gbc.gridx = 2;
-        modulos = new JButton("%");
-        modulos.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-        modulos.setBackground(backgroundColor);
-        modulos.setForeground(foregroundColor);
-        modulos.setFont(font);
-        modulos.setFocusable(false);
-        modulos.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                displayArea.append(modulos.getText());
-            }
-        });
-        modulos.setBorder(operandBorder_defaultState);
-        modulos.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (modulos.getModel().isRollover() || modulos.getModel().isPressed()) {
-                    modulos.setBorder(operandBorder_hoverState);
-                } else {
-                    modulos.setBorder(operandBorder_defaultState);
-                }
-            }
-        });
-        jPanel.add(modulos, gbc);
+        jPanel.add(operandButtons[2] = new JButton("%"), gbc);
 
         // CE Button
         gbc = new GridBagConstraints();
         gbc.insets = insets;
         gbc.gridy = 2;
         gbc.gridx = 3;
-        CE = new JButton("CE");
-        CE.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-        CE.setBackground(backgroundColor);
-        CE.setForeground(foregroundColor);
-        CE.setFont(font);
-        CE.setFocusable(false);
-        CE.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (displayArea.getText().length() >= 1) {
-                    displayArea.replaceRange("", displayArea.getText().length() - 1, displayArea.getText().length());
-                }
-            }
-        });
-        Timer trigger = new Timer(125, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                displayArea.setText("");
-            }
-        });
-        CE.setBorder(operandBorder_defaultState);
-        CE.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (CE.getModel().isPressed()) {
-                    CE.setBorder(operandBorder_hoverState);
-                    trigger.start();
-                } else if (CE.getModel().isRollover()) {
-                    CE.setBorder(operandBorder_hoverState);
-                    trigger.stop();
-                } else {
-                    CE.setBorder(operandBorder_defaultState);
-                    trigger.stop();
-                }
-            }
-        });
-        jPanel.add(CE, gbc);
+        jPanel.add(operandButtons[3] = new JButton("CE"), gbc);
 
         // Number Seven Button
         gbc = new GridBagConstraints();
         gbc.insets = insets;
         gbc.gridy = 3;
         gbc.gridx = 0;
-        numberSeven = new JButton("7");
-        numberSeven.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-        numberSeven.setBackground(numericalBackgroundColor);
-        numberSeven.setFont(font);
-        numberSeven.setFocusable(false);
-        numberSeven.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                displayArea.append(numberSeven.getText());
-            }
-        });
-        numberSeven.setBorder(numericalBorder_defaultState);
-        numberSeven.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (numberSeven.getModel().isRollover() || numberSeven.getModel().isPressed()) {
-                    numberSeven.setBorder(numericalBorder_hoverState);
-                } else {
-                    numberSeven.setBorder(numericalBorder_defaultState);
-                }
-            }
-        });
-
-        jPanel.add(numberSeven, gbc);
+        jPanel.add(numberedButtons[0] = new JButton("7"), gbc);
 
         // Number Eight Button
         gbc = new GridBagConstraints();
         gbc.insets = insets;
         gbc.gridy = 3;
         gbc.gridx = 1;
-        numberEight = new JButton("8");
-        numberEight.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-        numberEight.setBackground(numericalBackgroundColor);
-        numberEight.setFont(font);
-        numberEight.setFocusable(false);
-        numberEight.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                displayArea.append(numberEight.getText());
-            }
-        });
-        numberEight.setBorder(numericalBorder_defaultState);
-        numberEight.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (numberEight.getModel().isRollover() || numberEight.getModel().isPressed()) {
-                    numberEight.setBorder(numericalBorder_hoverState);
-                } else {
-                    numberEight.setBorder(numericalBorder_defaultState);
-                }
-            }
-        });
-        jPanel.add(numberEight, gbc);
+        jPanel.add(numberedButtons[1] = new JButton("8"), gbc);
 
         // Number Nine Button
         gbc = new GridBagConstraints();
         gbc.insets = insets;
         gbc.gridy = 3;
         gbc.gridx = 2;
-        numberNine = new JButton("9");
-        numberNine.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-        numberNine.setBackground(numericalBackgroundColor);
-        numberNine.setFont(font);
-        numberNine.setFocusable(false);
-        numberNine.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                displayArea.append(numberNine.getText());
-            }
-        });
-        numberNine.setBorder(numericalBorder_defaultState);
-        numberNine.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (numberNine.getModel().isRollover() || numberNine.getModel().isPressed()) {
-                    numberNine.setBorder(numericalBorder_hoverState);
-                } else {
-                    numberNine.setBorder(numericalBorder_defaultState);
-                }
-            }
-        });
-        jPanel.add(numberNine, gbc);
+        jPanel.add(numberedButtons[2] = new JButton("9"), gbc);
 
         // Division Button
         gbc = new GridBagConstraints();
         gbc.insets = insets;
         gbc.gridy = 3;
         gbc.gridx = 3;
-        division = new JButton("/");
-        division.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-        division.setBackground(backgroundColor);
-        division.setForeground(foregroundColor);
-        division.setFont(font);
-        division.setFocusable(false);
-        division.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                displayArea.append(division.getText());
-            }
-        });
-        division.setBorder(operandBorder_defaultState);
-        division.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (division.getModel().isRollover() || division.getModel().isPressed()) {
-                    division.setBorder(operandBorder_hoverState);
-                } else {
-                    division.setBorder(operandBorder_defaultState);
-                }
-            }
-        });
-        jPanel.add(division, gbc);
+        jPanel.add(operandButtons[4] = new JButton("/"), gbc);
 
         // Number Four Button
         gbc = new GridBagConstraints();
         gbc.insets = insets;
         gbc.gridy = 4;
         gbc.gridx = 0;
-        numberFour = new JButton("4");
-        numberFour.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-        numberFour.setBackground(numericalBackgroundColor);
-        numberFour.setFont(font);
-        numberFour.setFocusable(false);
-        numberFour.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                displayArea.append(numberFour.getText());
-            }
-        });
-        numberFour.setBorder(numericalBorder_defaultState);
-        numberFour.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (numberFour.getModel().isRollover() || numberFour.getModel().isPressed()) {
-                    numberFour.setBorder(numericalBorder_hoverState);
-                } else {
-                    numberFour.setBorder(numericalBorder_defaultState);
-                }
-            }
-        });
-        jPanel.add(numberFour, gbc);
+        jPanel.add(numberedButtons[3] = new JButton("4"), gbc);
 
         // Number Five Button
         gbc = new GridBagConstraints();
         gbc.insets = insets;
         gbc.gridy = 4;
         gbc.gridx = 1;
-        numberFive = new JButton("5");
-        numberFive.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-        numberFive.setBackground(numericalBackgroundColor);
-        numberFive.setFont(font);
-        numberFive.setFocusable(false);
-        numberFive.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                displayArea.append(numberFive.getText());
-            }
-        });
-        numberFive.setBorder(numericalBorder_defaultState);
-        numberFive.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (numberFive.getModel().isRollover() || numberFive.getModel().isPressed()) {
-                    numberFive.setBorder(numericalBorder_hoverState);
-                } else {
-                    numberFive.setBorder(numericalBorder_defaultState);
-                }
-            }
-        });
-        jPanel.add(numberFive, gbc);
+        jPanel.add(numberedButtons[4] = new JButton("5"), gbc);
 
         // Number Six Button
         gbc = new GridBagConstraints();
         gbc.insets = insets;
         gbc.gridy = 4;
         gbc.gridx = 2;
-        numberSix = new JButton("6");
-        numberSix.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-        numberSix.setBackground(numericalBackgroundColor);
-        numberSix.setFont(font);
-        numberSix.setFocusable(false);
-        numberSix.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                displayArea.append(numberSix.getText());
-            }
-        });
-        numberSix.setBorder(numericalBorder_defaultState);
-        numberSix.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (numberSix.getModel().isRollover() || numberSix.getModel().isPressed()) {
-                    numberSix.setBorder(numericalBorder_hoverState);
-                } else {
-                    numberSix.setBorder(numericalBorder_defaultState);
-                }
-            }
-        });
-        jPanel.add(numberSix, gbc);
+        jPanel.add(numberedButtons[5] = new JButton("6"), gbc);
 
         // Multiplication Button
         gbc = new GridBagConstraints();
         gbc.insets = insets;
         gbc.gridy = 4;
         gbc.gridx = 3;
-        multiplication = new JButton("x");
-        multiplication.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-        multiplication.setBackground(backgroundColor);
-        multiplication.setForeground(foregroundColor);
-        multiplication.setFont(font);
-        multiplication.setFocusable(false);
-        multiplication.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                displayArea.append("*");
-            }
-        });
-        multiplication.setBorder(operandBorder_defaultState);
-        multiplication.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (multiplication.getModel().isRollover() || multiplication.getModel().isPressed()) {
-                    multiplication.setBorder(operandBorder_hoverState);
-                } else {
-                    multiplication.setBorder(operandBorder_defaultState);
-                }
-            }
-        });
-        jPanel.add(multiplication, gbc);
+        jPanel.add(operandButtons[5] = new JButton("x"), gbc);
 
         // Number One Button
         gbc = new GridBagConstraints();
         gbc.insets = insets;
         gbc.gridy = 5;
         gbc.gridx = 0;
-        numberOne = new JButton("1");
-        numberOne.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-        numberOne.setBackground(numericalBackgroundColor);
-        numberOne.setFont(font);
-        numberOne.setFocusable(false);
-        numberOne.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                displayArea.append(numberOne.getText());
-            }
-        });
-        numberOne.setBorder(numericalBorder_defaultState);
-        numberOne.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (numberOne.getModel().isRollover() || numberOne.getModel().isPressed()) {
-                    numberOne.setBorder(numericalBorder_hoverState);
-                } else {
-                    numberOne.setBorder(numericalBorder_defaultState);
-                }
-            }
-        });
-        jPanel.add(numberOne, gbc);
+        jPanel.add(numberedButtons[6] = new JButton("1"), gbc);
 
         // Number Two Button
         gbc = new GridBagConstraints();
         gbc.insets = insets;
         gbc.gridy = 5;
         gbc.gridx = 1;
-        numberTwo = new JButton("2");
-        numberTwo.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-        numberTwo.setBackground(numericalBackgroundColor);
-        numberTwo.setFont(font);
-        numberTwo.setFocusable(false);
-        numberTwo.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                displayArea.append(numberTwo.getText());
-            }
-        });
-        numberTwo.setBorder(numericalBorder_defaultState);
-        numberTwo.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (numberTwo.getModel().isRollover() || numberTwo.getModel().isPressed()) {
-                    numberTwo.setBorder(numericalBorder_hoverState);
-                } else {
-                    numberTwo.setBorder(numericalBorder_defaultState);
-                }
-
-            }
-        });
-        jPanel.add(numberTwo, gbc);
+        jPanel.add( numberedButtons[7] = new JButton("2"), gbc);
 
         // Number Three Button
         gbc = new GridBagConstraints();
         gbc.insets = insets;
         gbc.gridy = 5;
         gbc.gridx = 2;
-        numberThree = new JButton("3");
-        numberThree.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-        numberThree.setBackground(numericalBackgroundColor);
-        numberThree.setFont(font);
-        numberThree.setFocusable(false);
-        numberThree.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                displayArea.append(numberThree.getText());
-            }
-        });
-        numberThree.setBorder(numericalBorder_defaultState);
-        numberThree.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (numberThree.getModel().isRollover() || numberThree.getModel().isPressed()) {
-                    numberThree.setBorder(numericalBorder_hoverState);
-                } else {
-                    numberThree.setBorder(numericalBorder_defaultState);
-                }
-            }
-        });
-        jPanel.add(numberThree, gbc);
+        jPanel.add(numberedButtons[8] = new JButton("3"), gbc);
 
         // Subtraction Button
         gbc = new GridBagConstraints();
         gbc.insets = insets;
         gbc.gridy = 5;
         gbc.gridx = 3;
-        subtraction = new JButton("-");
-        subtraction.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-        subtraction.setBackground(backgroundColor);
-        subtraction.setForeground(foregroundColor);
-        subtraction.setFont(font);
-        subtraction.setFocusable(false);
-        subtraction.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                displayArea.append(subtraction.getText());
-            }
-        });
-        subtraction.setBorder(operandBorder_defaultState);
-        subtraction.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (subtraction.getModel().isRollover() || subtraction.getModel().isPressed()) {
-                    subtraction.setBorder(operandBorder_hoverState);
-                } else {
-                    subtraction.setBorder(operandBorder_defaultState);
-                }
-            }
-        });
-        jPanel.add(subtraction, gbc);
-
+        jPanel.add(operandButtons[6] = new JButton("-"), gbc);
 
         // Number 0 Button
         gbc = new GridBagConstraints();
         gbc.insets = insets;
         gbc.gridy = 6;
         gbc.gridx = 0;
-        numberZero = new JButton("0");
-        numberZero.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-        numberZero.setBackground(numericalBackgroundColor);
-        numberZero.setFont(font);
-        numberZero.setFocusable(false);
-        numberZero.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                displayArea.append(numberZero.getText());
-            }
-        });
-        numberZero.setBorder(numericalBorder_defaultState);
-        numberZero.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (numberZero.getModel().isRollover() || numberZero.getModel().isPressed()) {
-                    numberZero.setBorder(numericalBorder_hoverState);
-                } else {
-                    numberZero.setBorder(numericalBorder_defaultState);
-                }
-            }
-        });
-        jPanel.add(numberZero, gbc);
+        jPanel.add(numberedButtons[9] = new JButton("0"), gbc);
 
         // Point Button
         gbc = new GridBagConstraints();
         gbc.insets = insets;
         gbc.gridy = 6;
         gbc.gridx = 1;
-        point = new JButton(".");
-        point.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-        point.setBackground(numericalBackgroundColor);
-        point.setFont(new Font(font.getName(), Font.BOLD, font.getSize()));
-        point.setFocusable(false);
-        point.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                displayArea.append(point.getText());
-            }
-        });
-        point.setBorder(numericalBorder_defaultState);
-        point.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (point.getModel().isRollover() || point.getModel().isPressed()) {
-                    point.setBorder(numericalBorder_hoverState);
-                } else {
-                    point.setBorder(numericalBorder_defaultState);
-                }
-            }
-        });
-        jPanel.add(point, gbc);
+        jPanel.add(numberedButtons[10] = new JButton("."), gbc);
 
         // Equals Button
         class EqualsAction extends AbstractAction {
             public void actionPerformed(ActionEvent actionEvent) {
-                final boolean acceptableFormat = validateExpression(displayArea.getText());
+            //    final boolean acceptableFormat = validateExpression(displayArea.getText());
 
-                if (acceptableFormat) {
                     Calculation calc = new Calculation(displayArea.getText());
-                    resultField.setText(displayArea.getText() + " " + equals.getText() + " ");
-                    displayArea.setText(calc.getResult());
-                }
+                    if (!calc.getResult().equals("null")) {
+                        resultField.setText(displayArea.getText() + " " + equals.getText() + " ");
+                        displayArea.setText(calc.getResult());
+                    }
+
+                    else {
+                        JOptionPane.showMessageDialog(jPanel, "cannot eval expression", "error - format", JOptionPane.ERROR_MESSAGE);
+                    }
             }
         }
 
@@ -686,39 +262,123 @@ public class CalcFrame extends JFrame {
         gbc.insets = insets;
         gbc.gridy = 6;
         gbc.gridx = 3;
-        addition = new JButton("+");
-        addition.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-        addition.setBackground(backgroundColor);
-        addition.setForeground(foregroundColor);
-        addition.setFont(font);
-        addition.setFocusable(false);
-        addition.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                displayArea.append(addition.getText());
-            }
-        });
-        addition.setBorder(operandBorder_defaultState);
-        addition.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (addition.getModel().isRollover() || addition.getModel().isPressed()) {
-                    addition.setBorder(operandBorder_hoverState);
-                } else {
-                    addition.setBorder(operandBorder_defaultState);
-                }
-            }
-        });
-        jPanel.add(addition, gbc);
-
+        jPanel.add(operandButtons[7] = new JButton("+"), gbc);
 
         add(jPanel);
         setSize(FRAME_WIDTH, FRAME_HEIGHT);
         setMinimumSize(new Dimension(FRAME_WIDTH - 25, FRAME_HEIGHT - 25));
         setLocation(X_POINT, Y_POINT);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setTitle("myCalculator V1.0");
-        setVisible(true);
+        setTitle("myCalculator");
+
+    }
+
+
+    private void initButtonGroupNumbered() {
+        for (JButton currentButton : numberedButtons) {
+            currentButton.setBackground(numericalBackgroundColor);
+            currentButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
+            currentButton.setFont(font);
+            currentButton.setFocusable(false);
+            currentButton.setBorder(numericalBorder_defaultState);
+            currentButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    displayArea.append(currentButton.getText());
+                }
+            });
+            currentButton.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    if (currentButton.getModel().isRollover() || currentButton.getModel().isPressed()) {
+                        currentButton.setBorder(numericalBorder_hoverState);
+                    } else {
+                        currentButton.setBorder(numericalBorder_defaultState);
+                    }
+                }
+            });
+        }
+    }
+
+    private void initButtonGroupOperand() {
+        for (JButton currentButton : operandButtons) {
+            currentButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
+            currentButton.setBackground(backgroundColor);
+            currentButton.setForeground(foregroundColor);
+            currentButton.setFont(font);
+            currentButton.setFocusable(false);
+            currentButton.setBorder(operandBorder_defaultState);
+            currentButton.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    if (currentButton.getModel().isRollover() || currentButton.getModel().isPressed()) {
+                        currentButton.setBorder(operandBorder_hoverState);
+                    } else {
+                        currentButton.setBorder(operandBorder_defaultState);
+                    }
+                }
+            });
+
+            /*
+              If the currentButton isn't CE or Multiplication then
+              add the standard actionListener
+             */
+            if (!currentButton.getText().equals("CE") &&
+                !currentButton.getText().equalsIgnoreCase("x")) {
+                currentButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        displayArea.append(currentButton.getText());
+                    }
+                });
+            }
+
+            /*
+              If the currentButton is Multiplication then
+              add Multiplication case actionListener
+             */
+            else if (currentButton.getText().equalsIgnoreCase("x")) {
+                currentButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        displayArea.append("*");
+                    }
+                });
+            }
+
+            /*
+              If the currentButton is any other (CE) then
+              add CE case action and changeListeners
+             */
+            else {
+                currentButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if (displayArea.getText().length() >= 1) {
+                            displayArea.replaceRange("", displayArea.getText().length() - 1, displayArea.getText().length());
+                        }
+                    }
+                });
+                Timer trigger = new Timer(125, new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        displayArea.setText("");
+                    }
+                });
+                currentButton.addChangeListener(new ChangeListener() {
+                    @Override
+                    public void stateChanged(ChangeEvent e) {
+                        if (currentButton.getModel().isPressed()) {
+                            trigger.start();
+                        }
+
+                        else {
+                            trigger.stop();
+                        }
+                    }
+                });
+            }
+        }
 
     }
 
@@ -795,6 +455,7 @@ public class CalcFrame extends JFrame {
 
         return output;
     }
+
 
 
 }
